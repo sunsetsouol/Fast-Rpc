@@ -16,4 +16,6 @@ public interface Registry {
     List<ServiceMetaData> getServiceAddress(String serviceName);
 
     void heartbeat();
+
+    void destroy();
 }

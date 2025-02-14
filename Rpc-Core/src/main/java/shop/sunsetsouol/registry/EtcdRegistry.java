@@ -112,4 +112,19 @@ public class EtcdRegistry implements Registry {
             }
         });
     }
+
+    @Override
+    public void destroy() {
+        log.info("当前节点下线");
+        for (String key : localRegisterNodeKeySet) {
+            try {
+                client.getKVClient().delete(ByteSequence.from(key, StandardCharsets.UTF_8));
+            } catch (Exception e) {
+                throw new RuntimeException(key + "节点下线失败");
+            }
+        }
+        if (client != null){
+            client.close();
+        }
+    }
 }

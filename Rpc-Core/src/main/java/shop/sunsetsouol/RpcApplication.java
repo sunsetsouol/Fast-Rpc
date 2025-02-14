@@ -21,9 +21,10 @@ public class RpcApplication {
     public static void init(RpcConfig rpcConfig){
         RegistryConfig registryConfig = rpcConfig.getRegistryConfig();
 
-        Registry register = RegistryFactory.getRegister(registryConfig.getRegisterType());
+        Registry registry = RegistryFactory.getRegister(registryConfig.getRegisterType());
 
-        register.init(registryConfig);
+        registry.init(registryConfig);
+        Runtime.getRuntime().addShutdownHook(new Thread(registry::destroy));
     }
 
     public static RpcConfig getRpcConfig(){
