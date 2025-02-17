@@ -30,28 +30,28 @@ public class SPILoader {
     /**
      * 工厂模式存储已加载的类：接口类 =>（key => 实现类）
      */
-    private static Map<Class<?>, Map<String, Class<?>>> loaderMap = new ConcurrentHashMap<>();
+    private static Map<Class<?>, Map<String, String>> loaderMap = new ConcurrentHashMap<>();
 
     /**
      * 对象实例缓存（避免重复 new），类路径 => 对象实例，单例模式
      */
     private static Map<String, Object> instanceCache = new ConcurrentHashMap<>();
 
-    public static void load(Class<?> loadClass){
+    public static void load(Class<?> loadClass) {
         for (String scanDir : SCAN_DIRS) {
             String resourceDir = scanDir + loadClass.getName();
             URL resource = ResourceUtil.getResource(resourceDir);
-            try{
+            try {
                 InputStream inputStream = resource.openStream();
                 BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
                 String line = reader.readLine();
                 String[] split = line.split("=");
-                if (split.length != 2){
+                if (split.length != 2) {
                     throw new RuntimeException("spi配置错误");
                 }
-                Class<?> imployeeClass = Class.forName(split[1]);
-                Map<String , Class<?>> implClass = new HashMap<>();
-                implClass.put(split[0], imployeeClass);
+                // todo：改成配置类按需加载
+                Map<String, String> implClass = new HashMap<>();
+                implClass.put(split[0], split[1]);
                 loaderMap.put(loadClass, implClass);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -59,23 +59,23 @@ public class SPILoader {
         }
     }
 
-    public static<T> T getInstance(Class<T> tClass, String key) {
-        Map<String, Class<?>> classMap = loaderMap.get(tClass);
-        if (classMap == null){
+    public static <T> T getInstance(Class<T> tClass, String key) {
+        Map<String, String> classMap = loaderMap.get(tClass);
+        if (classMap == null) {
             throw new RuntimeException("未加载" + tClass.getName());
         }
-        if (!classMap.containsKey(key)){
+        if (!classMap.containsKey(key)) {
             throw new RuntimeException("不存在" + tClass.getName() + "的" + key);
         }
-        Class<?> implClass = classMap.get(key);
-        String implClassName = implClass.getName();
-        if (!instanceCache.containsKey(implClassName)) {
-            try {
+        try {
+            Class<?> implClass = Class.forName(classMap.get(key));
+            String implClassName = implClass.getName();
+            if (!instanceCache.containsKey(implClassName)) {
                 instanceCache.put(implClassName, implClass.newInstance());
-            } catch (InstantiationException | IllegalAccessException e) {
-                throw new RuntimeException(e);
             }
+            return (T) instanceCache.get(implClassName);
+        } catch (Exception  e) {
+            throw new RuntimeException(e);
         }
-        return (T)instanceCache.get(implClassName);
     }
 }
