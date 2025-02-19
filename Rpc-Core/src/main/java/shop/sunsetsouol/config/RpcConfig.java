@@ -34,6 +34,11 @@ public class RpcConfig {
      */
     private String loadBalancer;
 
+    /**
+     * 重试策略
+     */
+    private String retry;
+
 
     private RegistryConfig registryConfig ;
 }

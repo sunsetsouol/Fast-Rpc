@@ -1,6 +1,7 @@
 serverHost: localhost
 serverPort: 8080
 serializer: json
+retry: fixInterval
 registryConfig:
   registerType: etcd
   address: http://47.120.32.160:2380
