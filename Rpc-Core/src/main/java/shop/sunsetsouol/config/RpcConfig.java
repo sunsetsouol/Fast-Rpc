@@ -34,6 +34,21 @@ public class RpcConfig {
      */
     private String loadBalancer;
 
+    /**
+     * 重试策略
+     */
+    private String retry;
+
+    /**
+     * 客户端
+     */
+    private String client;
+
+    /**
+     * 服务端
+     */
+    private String server;
 
     private RegistryConfig registryConfig ;
+
 }

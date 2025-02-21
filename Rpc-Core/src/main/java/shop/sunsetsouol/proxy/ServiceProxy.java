@@ -10,7 +10,10 @@ import shop.sunsetsouol.model.ServiceMetaData;
 import shop.sunsetsouol.registry.Registry;
 import shop.sunsetsouol.registry.RegistryEnum;
 import shop.sunsetsouol.registry.RegistryFactory;
-import shop.sunsetsouol.server.tcp.VertxTcpClient;
+import shop.sunsetsouol.retry.RetryStrategy;
+import shop.sunsetsouol.retry.RetryStrategyFactory;
+import shop.sunsetsouol.server.RpcClient;
+import shop.sunsetsouol.server.RpcClientFactory;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -44,7 +47,14 @@ public class ServiceProxy implements InvocationHandler {
             map.put(method.getParameters()[i].getName(), args[i]);
         }
         ServiceMetaData host = loadbalancer.select(map, serviceAddress);
-        RpcResponse rpcResponse = VertxTcpClient.doRequest(rpcRequest, host);
+
+        RetryStrategy retryStrategy = RetryStrategyFactory.getRetryStrategy(rpcConfig.getRetry());
+        RpcClient rpcClient = RpcClientFactory.getRpcClient(rpcConfig.getClient());
+
+        RpcResponse rpcResponse = retryStrategy.retry(
+                () -> rpcClient.doRequest(rpcRequest, host)
+        );
+
         if (rpcResponse != null) {
             return rpcResponse.getData();
         }

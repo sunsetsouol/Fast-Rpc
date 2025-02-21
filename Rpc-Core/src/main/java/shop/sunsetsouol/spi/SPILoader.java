@@ -44,14 +44,16 @@ public class SPILoader {
             try {
                 InputStream inputStream = resource.openStream();
                 BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-                String line = reader.readLine();
-                String[] split = line.split("=");
-                if (split.length != 2) {
-                    throw new RuntimeException("spi配置错误");
-                }
-                // todo：改成配置类按需加载
+                String line ;
                 Map<String, String> implClass = new HashMap<>();
-                implClass.put(split[0], split[1]);
+                while ((line = reader.readLine() )!= null){
+                    String[] split = line.split("=");
+                    if (split.length != 2) {
+                        throw new RuntimeException("spi配置错误");
+                    }
+                    // todo：改成配置类按需加载
+                    implClass.put(split[0], split[1]);
+                }
                 loaderMap.put(loadClass, implClass);
             } catch (Exception e) {
                 e.printStackTrace();

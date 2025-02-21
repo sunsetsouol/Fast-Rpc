@@ -1,13 +1,15 @@
-package shop.sunsetsouol.server.tcp;
+package shop.sunsetsouol.server.vertx;
 
 import io.vertx.core.Vertx;
 import io.vertx.core.net.NetServer;
 import lombok.extern.slf4j.Slf4j;
+import shop.sunsetsouol.server.RpcServer;
 
 
 @Slf4j
-public class VertxTcpServer {
+public class VertxTcpServer implements RpcServer {
 
+    @Override
     public void doStart(int port) {
         // 创建 Vert.x 实例
         Vertx vertx = Vertx.vertx();

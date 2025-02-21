@@ -1,0 +1,2 @@
+fixInterval=shop.sunsetsoul.retry.FixRateRetryStrategy
+incrInterval=shop.sunsetsoul.retry.IncrIntervalRetryStrategy

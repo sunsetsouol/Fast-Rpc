@@ -1,4 +1,4 @@
-package shop.sunsetsouol.server.tcp;
+package shop.sunsetsouol.server.vertx;
 
 import cn.hutool.core.util.IdUtil;
 import io.vertx.core.Vertx;
@@ -15,13 +15,14 @@ import shop.sunsetsouol.protocol.ProtocolMessageDecoder;
 import shop.sunsetsouol.protocol.ProtocolMessageEncoder;
 import shop.sunsetsouol.protocol.ProtocolMessageSerializerEnum;
 import shop.sunsetsouol.protocol.ProtocolMessageTypeEnum;
+import shop.sunsetsouol.server.RpcClient;
 
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 
-public class VertxTcpClient {
+public class VertxTcpClient implements RpcClient {
 
     /**
      * 发送请求
@@ -33,7 +34,8 @@ public class VertxTcpClient {
      * @throws InterruptedException
      * @throws ExecutionException
      */
-    public static RpcResponse doRequest(RpcRequest rpcRequest, ServiceMetaData serviceMetaData) throws InterruptedException, ExecutionException {
+    @Override
+    public RpcResponse doRequest(RpcRequest rpcRequest, ServiceMetaData serviceMetaData) throws ExecutionException, InterruptedException {
         // 发送 TCP 请求
         Vertx vertx = Vertx.vertx();
         NetClient netClient = vertx.createNetClient();
@@ -87,4 +89,5 @@ public class VertxTcpClient {
         netClient.close();
         return rpcResponse;
     }
+
 }

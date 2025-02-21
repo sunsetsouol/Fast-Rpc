@@ -1,2 +1,1 @@
 etcd=shop.sunsetsouol.registry.EtcdRegistry
-zookeeper=com.yupi.yurpc.registry.ZooKeeperRegistry
