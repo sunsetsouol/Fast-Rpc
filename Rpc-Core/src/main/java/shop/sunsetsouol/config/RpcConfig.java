@@ -39,6 +39,16 @@ public class RpcConfig {
      */
     private String retry;
 
+    /**
+     * 客户端
+     */
+    private String client;
+
+    /**
+     * 服务端
+     */
+    private String server;
 
     private RegistryConfig registryConfig ;
+
 }

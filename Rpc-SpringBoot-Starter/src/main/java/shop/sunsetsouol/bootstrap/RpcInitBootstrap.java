@@ -6,7 +6,8 @@ import org.springframework.core.type.AnnotationMetadata;
 import shop.sunsetsouol.RpcApplication;
 import shop.sunsetsouol.annotiation.EnableRpc;
 import shop.sunsetsouol.config.RpcConfig;
-import shop.sunsetsouol.server.tcp.VertxTcpServer;
+import shop.sunsetsouol.server.RpcServer;
+import shop.sunsetsouol.server.RpcServerFactory;
 
 /**
  * @author YinJunBiao
@@ -23,8 +24,9 @@ public class RpcInitBootstrap implements ImportBeanDefinitionRegistrar {
         //  如果是服务提供者，启动服务器接收请求
         if (isProvider) {
             RpcConfig rpcConfig = RpcApplication.getRpcConfig();
-            VertxTcpServer vertxTcpServer = new VertxTcpServer();
-            vertxTcpServer.doStart(rpcConfig.getServerPort());
+            RpcServer rpcServer = RpcServerFactory.getRpcServer(rpcConfig.getServer());
+
+            rpcServer.doStart(rpcConfig.getServerPort());
         }
         ImportBeanDefinitionRegistrar.super.registerBeanDefinitions(importingClassMetadata, registry);
     }

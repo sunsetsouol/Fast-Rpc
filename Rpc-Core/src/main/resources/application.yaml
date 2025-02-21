@@ -2,6 +2,8 @@ serverHost: localhost
 serverPort: 8080
 serializer: json
 retry: fixInterval
+client: vertx
+server: vertx
 registryConfig:
   registerType: etcd
   address: http://47.120.32.160:2380
